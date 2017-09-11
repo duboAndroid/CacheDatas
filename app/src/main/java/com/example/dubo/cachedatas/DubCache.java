@@ -169,12 +169,36 @@ public class DubCache {
      *
      * @param directory
      */
-    private static void deleteFilesByDirectory(File directory) {
-        if (directory != null && directory.exists() && directory.isDirectory()) {
+    private static boolean deleteFilesByDirectory(File directory) {
+        /*if (directory != null && directory.exists() && directory.isDirectory()) {
             for (File item : directory.listFiles()) {
                 item.delete();
             }
+        }*/
+
+        if (directory != null && directory.isDirectory()) {
+            String[] children = directory.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(directory, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
         }
+        return directory.delete();
+    }
+
+    private static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 
     // 获取文件
